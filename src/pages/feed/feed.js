@@ -40,6 +40,7 @@ export class FeedPage {
         /**
          * Массив id фильмов
          */
+
         const recommendations = await $sendRecommendations(userId);
 
         console.info(recommendations);
@@ -50,6 +51,10 @@ export class FeedPage {
             const state = store.getState().collections;
             this.#parent.innerHTML = feed({ 'preview': state.preview, 'id': 'playButton' });
             this.addCollections(state.collections);
+
+            const root = document.getElementById('feed-collections');
+            new FeedCollection(root, 'Для вас', recommendations, 123456);
+
             logoutHandle();
 
             const btn = document.getElementById('playButton');

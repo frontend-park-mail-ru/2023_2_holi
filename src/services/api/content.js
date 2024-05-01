@@ -5,9 +5,13 @@ export const $sendRecommendations = (id) => {
     return getRecommended(id)
         .then(response => {
             const recommendations = response.body.recommendations;
+
             if (recommendations) {
                 const recommendationsPromises = recommendations.map(recommendation => {
-                    return getContentById(recommendation);
+                    return getContentById(recommendation)
+                        .then(res => {
+                            return res.body.film;
+                        });
                 });
 
                 // eslint-disable-next-line no-undef
