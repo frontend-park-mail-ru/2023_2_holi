@@ -30,9 +30,9 @@ export class FeedPage {
          */
 
         const recommendations = await $sendRecommendations(userId);
-        if (recommendations) {
+        if (recommendations && recommendations.length > 0) {
             new FeedCollection(root, 'Для вас', recommendations, 123456);
-            console.info(recommendations);
+            console.info("Recommendations: ", recommendations);
         }
 
         content.forEach((data) => {

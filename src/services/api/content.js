@@ -1,26 +1,42 @@
 import { NETFLIX_API } from './const.js';
 import { Page404 } from '../../pages/404/404';
 
+// export const $sendRecommendations = (id) => {
+//     return getRecommended(id)
+//         .then(response => {
+//             const recommendations = response.body.recommendations;
+//
+//             if (recommendations) {
+//                 const recommendationsPromises = recommendations.map(recommendation => {
+//                     return getContentById(recommendation)
+//                         .then(res => {
+//                             return res.body.film;
+//                         });
+//                 });
+//
+//                 // eslint-disable-next-line no-undef
+//                 return Promise.all(recommendationsPromises);
+//             }
+//
+//         });
+//
+// };
+
 export const $sendRecommendations = (id) => {
     return getRecommended(id)
         .then(response => {
-            const recommendations = response.body.recommendations;
-
-            if (recommendations) {
-                const recommendationsPromises = recommendations.map(recommendation => {
-                    return getContentById(recommendation)
-                        .then(res => {
-                            return res.body.film;
-                        });
-                });
-
-                // eslint-disable-next-line no-undef
-                return Promise.all(recommendationsPromises);
+            // Предполагаем, что ответ содержит непосредственно полные объекты фильмов
+            return response.body.recommendations || [];
+        })
+        .catch(error => {
+            if (!navigator.onLine) {
+                (new Page404(document.getElementById('root'))).render();
             }
-
+            console.error('Ошибка при получении рекомендаций:', error);
+            return [];
         });
-
 };
+
 
 export const getRecommended = (id) => {
     return fetch(`${NETFLIX_API}/films/recommendations/${id}`, {
@@ -47,6 +63,7 @@ export const getRecommended = (id) => {
             throw new Error(error);
         });
 };
+
 /**
  * Выполняет запрос на получение фильмов по указанному жанру.
  * @param {string} genre - Жанр фильмов, которые требуется получить.
