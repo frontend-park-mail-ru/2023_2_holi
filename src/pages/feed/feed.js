@@ -21,9 +21,19 @@ export class FeedPage {
         this.#parent = parent;
     }
 
-    addCollections(content) {
+    async addCollections(content) {
         const root = document.getElementById('feed-collections');
         root.innerHTML = '';
+        const userId = Number(localStorage.getItem('userId'));
+        /**
+         * Массив id фильмов
+         */
+
+        const recommendations = await $sendRecommendations(userId);
+
+        new FeedCollection(root, 'Для вас', recommendations, 123456);
+        console.info(recommendations);
+
         content.forEach((data) => {
             new FeedCollection(root, data.name, data.content, data.id);
         });
@@ -36,24 +46,12 @@ export class FeedPage {
         store.clearSubscribes();
         this.#parent.innerHTML = '';
 
-        const userId = Number(localStorage.getItem('userId'));
-        /**
-         * Массив id фильмов
-         */
-
-        const recommendations = await $sendRecommendations(userId);
-
-        console.info(recommendations);
-
         store.dispatch($sendCollectionAliasRequest());
-        store.subscribe(COLLECTION_REDUCER, () => {
+        store.subscribe(COLLECTION_REDUCER, async () => {
 
             const state = store.getState().collections;
             this.#parent.innerHTML = feed({ 'preview': state.preview, 'id': 'playButton' });
-            this.addCollections(state.collections);
-
-            const root = document.getElementById('feed-collections');
-            new FeedCollection(root, 'Для вас', recommendations, 123456);
+            await this.addCollections(state.collections);
 
             logoutHandle();
 
