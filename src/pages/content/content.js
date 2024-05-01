@@ -1,4 +1,4 @@
-import { getContentById } from '../../services/api/content.js';
+import { $sendRecommendations, getContentById } from '../../services/api/content.js';
 import { getLastNumber } from '../../services/getParams.js';
 import content from './content.hbs';
 import { deleteLike, getLikeState, setLike } from '../../services/api/like.js';
@@ -36,6 +36,13 @@ export class ContentPage {
         const id = getLastNumber(location.href);
         localStorage.setItem('LastContentId', id);
         const film = await getContentById(id);
+        const userId = Number(localStorage.getItem('userId'));
+        /**
+         * Массив id фильмов
+         */
+        const recommendations = await $sendRecommendations(userId);
+
+        console.info(recommendations);
 
         this.#parent.innerHTML = content({ film: film.body });
         avatarUpdate();
@@ -63,7 +70,7 @@ export class ContentPage {
             }
         });
         const video = document.querySelector('video');
-        video.addEventListener('loadedmetadata', function() {
+        video.addEventListener('loadedmetadata', function () {
             const durationInSeconds = video.duration;
 
             // Преобразуем длительность из секунд в часы и минуты
