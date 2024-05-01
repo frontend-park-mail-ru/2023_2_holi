@@ -5,12 +5,15 @@ export const $sendRecommendations = (id) => {
     return getRecommended(id)
         .then(response => {
             const recommendations = response.body.recommendations;
-            const recommendationsPromises = recommendations.map(recommendation => {
-                return getContentById(recommendation);
-            });
+            if (recommendations) {
+                const recommendationsPromises = recommendations.map(recommendation => {
+                    return getContentById(recommendation);
+                });
 
-            // eslint-disable-next-line no-undef
-            return Promise.all(recommendationsPromises);
+                // eslint-disable-next-line no-undef
+                return Promise.all(recommendationsPromises);
+            }
+
         });
 
 };

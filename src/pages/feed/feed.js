@@ -5,6 +5,7 @@ import { $sendCollectionAliasRequest, COLLECTION_REDUCER } from '../../services/
 import { seachHandler } from '../../services/search-utils.js';
 import { avatarUpdate } from '../../services/avatar-update.js';
 import { logoutHandle } from '../../services/logoutHandle.js';
+import { $sendRecommendations } from '../../services/api/content.js';
 
 /**
  * Класс, представляющий страницу ленты.
@@ -34,6 +35,14 @@ export class FeedPage {
     async render() {
         store.clearSubscribes();
         this.#parent.innerHTML = '';
+
+        const userId = Number(localStorage.getItem('userId'));
+        /**
+         * Массив id фильмов
+         */
+        const recommendations = await $sendRecommendations(userId);
+
+        console.info(recommendations);
 
         store.dispatch($sendCollectionAliasRequest());
         store.subscribe(COLLECTION_REDUCER, () => {

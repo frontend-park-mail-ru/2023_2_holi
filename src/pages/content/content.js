@@ -36,13 +36,6 @@ export class ContentPage {
         const id = getLastNumber(location.href);
         localStorage.setItem('LastContentId', id);
         const film = await getContentById(id);
-        const userId = Number(localStorage.getItem('userId'));
-        /**
-         * Массив id фильмов
-         */
-        const recommendations = await $sendRecommendations(userId);
-
-        console.info(recommendations);
 
         this.#parent.innerHTML = content({ film: film.body });
         avatarUpdate();
