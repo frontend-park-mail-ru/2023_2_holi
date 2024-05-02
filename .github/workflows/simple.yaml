@@ -40,7 +40,7 @@
        - name: Transfer build files to server
          uses: appleboy/scp-action@master
          with:
-           host: 212.233.73.20
+           host: 83.166.235.244
            username: ubuntu
            key: ${{ secrets.PRIVATE_KEY }}
            source: "bundle/*"
